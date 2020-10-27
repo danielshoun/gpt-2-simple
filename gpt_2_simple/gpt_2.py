@@ -25,9 +25,9 @@ from gpt_2_simple.src import model, sample, encoder, memory_saving_gradients
 from gpt_2_simple.src.load_dataset import load_dataset, Sampler
 from gpt_2_simple.src.accumulate import AccumulatingOptimizer
 
-assert tf.__version__ < '2.0.0', "gpt-2-simple currently does not support " \
-    "TensorFlow 2.0. You'll need to use a virtualenv/cloud computer which " \
-    "has Tensorflow 1.X on it."
+# assert tf.__version__ < '2.0.0', "gpt-2-simple currently does not support " \
+#     "TensorFlow 2.0. You'll need to use a virtualenv/cloud computer which " \
+#     "has Tensorflow 1.X on it."
 
 
 def download_file_with_progress(url_base, sub_dir, model_name, file_name):
@@ -97,6 +97,7 @@ def start_tf_sess(threads=-1, server=None):
     """
     Returns a tf.Session w/ config
     """
+    tf.compat.v1.disable_eager_execution()
     config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
     config.graph_options.rewrite_options.layout_optimizer = rewriter_config_pb2.RewriterConfig.OFF
@@ -188,6 +189,7 @@ def finetune(sess,
         use_memory_saving_gradients = True
         only_train_transformer_layers = True
         accumulate_gradients = 1
+
 
     context = tf.compat.v1.placeholder(tf.int32, [batch_size, None])
     gpus = []
